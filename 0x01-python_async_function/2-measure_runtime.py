@@ -10,7 +10,7 @@ def measure_time(n: int, max_delay: int) -> float:
     '''Measure the runtime for wait_n() asynchronous coroutines function'''
     start_at: float = time.time()
     asyncio.run(wait_n(n, max_delay))
-    end_at = time.time() - start_at
+    end_at: float = time.time() - start_at
     return end_at / n
 
 # n = 5
