@@ -18,9 +18,9 @@ async def async_generator() -> AsyncGenerator[float, None]:
 
 # Test case:
 #
-async def print_yielded_values():
-    result = []
-    async for i in async_generator():
-        result.append(i)
-    print(result)
-asyncio.run(print_yielded_values())
+# async def print_yielded_values():
+#     result = []
+#     async for i in async_generator():
+#         result.append(i)
+#     print(result)
+# asyncio.run(print_yielded_values())
