@@ -45,13 +45,13 @@ class TestGithubOrgClient(unittest.TestCase):
                     }
                 ]
         }
-        mock_get_json.return_value = repos['repo']
         with patch('client.GithubOrgClient._public_repos_url',
                    new_callable=PropertyMock) as mock_public_repos_url:
             url = 'https://api.github.com/orgs/abc'
             mock_public_repos_url.return_value = url
+            mock_get_json.return_value = repos['repo']
             client = GithubOrgClient('abc')
             public_repos = client.public_repos()
             self.assertEqual(public_repos, ['alx-interview'])
             mock_public_repos_url.assert_called_once()
-        mock_get_json.assert_called_once()
+            mock_get_json.assert_called_once()
