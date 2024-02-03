@@ -55,5 +55,5 @@ class TestGithubOrgClient(unittest.TestCase):
             client = GithubOrgClient('abc')
             public_repos = client.public_repos(license='my_license')
             mock_public_repos_url.assert_called_once()
-            mock_get_json.assert_called_once_with(url)
             self.assertEqual(public_repos, ['alx-backend_python'])
+        mock_get_json.assert_called_once_with(url)
