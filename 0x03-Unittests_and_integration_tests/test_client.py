@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''Test module for org method'''
 from parameterized import parameterized
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, PropertyMock
 import unittest
 
 GithubOrgClient = __import__('client').GithubOrgClient
@@ -23,3 +23,13 @@ class TestGithubOrgClient(unittest.TestCase):
         mock_get_json.assert_called_once_with(
             "https://api.github.com/orgs/" + org)
         self.assertEqual(org_info, expected_output)
+
+    def test_public_repos_url(self):
+        '''Test that _public_repos_url returns what it is supposed to'''
+        with patch('client.GithubOrgClient.org',
+                   new_callable=PropertyMock) as mock_org:
+            url = "https://api.github.com/orgs/abc"
+            mock_org.return_value = {'repos_url': url}
+            client = GithubOrgClient("abc")
+            repos_url = client._public_repos_url
+            self.assertEqual(repos_url, url)
