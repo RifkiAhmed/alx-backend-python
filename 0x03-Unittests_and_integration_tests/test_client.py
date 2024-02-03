@@ -38,20 +38,22 @@ class TestGithubOrgClient(unittest.TestCase):
     def test_public_repos(self, mock_get_json):
         '''Test that public_repos returns what it is supposed to'''
         repos = {
-            'repo1': {'name': 'alx-interview'},
-            'repo2': {'name': 'alx-backend_python'},
-            'repo3': {'name': 'alx-backend_storage'},
-            'repo4': {'name': 'alx-backend_javascript'}
+            'repo1': {'name': 'alx-interview',
+                      "license": {"key": "your_license"}},
+            'repo2': {'name': 'alx-backend_python',
+                      "license": {"key": "my_license"}},
+            'repo3': {'name': 'alx-backend_storage',
+                      "license": {"key": "your_license"}},
+            'repo4': {'name': 'alx-backend_javascript',
+                      "license": {"key": "your_license"}}
         }
-        repos_properties = repos.values()
-        repos_names = [prop['name'] for prop in repos_properties]
         with patch('client.GithubOrgClient._public_repos_url',
                    new_callable=PropertyMock) as mock_public_repos_url:
             url = 'https://api.github.com/orgs/abc'
             mock_public_repos_url.return_value = url
             mock_get_json.return_value = repos
             client = GithubOrgClient('abc')
-            public_repos = client.public_repos()
+            public_repos = client.public_repos(license='my_license')
             mock_public_repos_url.assert_called_once()
             mock_get_json.assert_called_once()
-            self.assertEqual(public_repos, repos_names)
+            self.assertEqual(public_repos, ['alx-backend_python'])
