@@ -39,7 +39,8 @@ class TestGithubOrgClient(unittest.TestCase):
         '''Test that public_repos returns what it is supposed to'''
         repos = {
             'repo1': {'name': 'alx-interview'},
-            'repo2': {'name': 'alx-backend_python'},
+            'repo2': {'name': 'alx-backend_python',
+                      "license": {"key": "my_license"}},
             'repo3': {'name': 'alx-backend_storage'},
             'repo4': {'name': 'alx-backend_javascript'}
         }
@@ -51,7 +52,7 @@ class TestGithubOrgClient(unittest.TestCase):
             mock_public_repos_url.return_value = url
             mock_get_json.return_value = repos
             client = GithubOrgClient('abc')
-            public_repos = client.public_repos()
-            self.assertEqual(public_repos, repos_names)
+            public_repos = client.public_repos(license="my_license")
+            self.assertEqual(public_repos, ['alx-backend_python'])
             mock_public_repos_url.assert_called_once()
             mock_get_json.assert_called_once()
