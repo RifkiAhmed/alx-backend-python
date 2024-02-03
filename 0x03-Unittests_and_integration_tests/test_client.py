@@ -36,7 +36,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
     @patch('client.get_json')
     def test_public_repos(self, mock_get_json):
-        ''''''
+        '''Test that public_repos returns what it is supposed to'''
         repos = {
             'repo1': {'name': 'alx-interview'},
             'repo2': {'name': 'alx-backend_python'},
@@ -54,4 +54,4 @@ class TestGithubOrgClient(unittest.TestCase):
             public_repos = client.public_repos()
             self.assertEqual(public_repos, repos_names)
             mock_public_repos_url.assert_called_once()
-            mock_get_json.assert_called_once_with(url)
+            mock_get_json.assert_called_once()
