@@ -66,3 +66,12 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(public_repos, ["alx-backend_python"])
             mock_public_repos_url.assert_called_once()
             mock_get_json.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
+    def test_has_license(self, repo, license_key, expected_value):
+        """Test that has_license method returns what it is supposed to"""
+        self.assertEqual(GithubOrgClient.has_license(repo, license_key),
+                         expected_value)
