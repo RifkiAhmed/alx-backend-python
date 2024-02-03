@@ -47,8 +47,8 @@ class TestGithubOrgClient(unittest.TestCase):
             'repo4': {'name': 'alx-backend_javascript',
                       "license": {"key": "your_license"}}
         }
-        with patch.object(GithubOrgClient, '_public_repos_url',
-                   new_callable=PropertyMock) as mock_public_repos_url:
+        with patch('client.GithubOrgClient._public_repos_url',
+                          new_callable=PropertyMock) as mock_public_repos_url:
             url = 'https://api.github.com/orgs/abc'
             mock_public_repos_url.return_value = url
             mock_get_json.return_value = repos
