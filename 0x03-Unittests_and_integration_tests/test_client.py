@@ -33,3 +33,25 @@ class TestGithubOrgClient(unittest.TestCase):
             client = GithubOrgClient("abc")
             repos_url = client._public_repos_url
             self.assertEqual(repos_url, url)
+
+    @patch('client.get_json')
+    def test_public_repos(self, mock_get_json):
+        ''''''
+        repos = {
+            'repo1': {'name': 'alx-interview'},
+            'repo2': {'name': 'alx-backend_python'},
+            'repo3': {'name': 'alx-backend_storage'},
+            'repo4': {'name': 'alx-backend_javascript'}
+        }
+        repos_properties = repos.values()
+        repos_names = [prop['name'] for prop in repos_properties]
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as mock_public_repos_url:
+            url = 'https://api.github.com/orgs/abc'
+            mock_public_repos_url.return_value = url
+            mock_get_json.return_value = repos
+            client = GithubOrgClient('abc')
+            public_repos = client.public_repos()
+            self.assertEqual(public_repos, repos_names)
+            mock_public_repos_url.assert_called_once()
+            mock_get_json.assert_called_once_with(url)
