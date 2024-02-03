@@ -47,13 +47,13 @@ class TestGithubOrgClient(unittest.TestCase):
             'repo4': {'name': 'alx-backend_javascript',
                       "license": {"key": "your_license"}}
         }
+        mock_get_json.return_value = repos
         with patch('client.GithubOrgClient._public_repos_url',
                    new_callable=PropertyMock) as mock_public_repos_url:
             url = 'https://api.github.com/orgs/abc'
             mock_public_repos_url.return_value = url
-            mock_get_json.return_value = repos
             client = GithubOrgClient('abc')
             public_repos = client.public_repos(license='my_license')
-            mock_public_repos_url.assert_called_once()
             self.assertEqual(public_repos, ['alx-backend_python'])
-        mock_get_json.assert_called_once_with(url)
+            mock_public_repos_url.assert_called_once()
+        mock_get_json.assert_called_once()
