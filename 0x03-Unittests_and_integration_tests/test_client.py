@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Test module for org method"""
 from parameterized import parameterized, parameterized_class
-import requests
-from unittest.mock import Mock, MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch, PropertyMock
 import unittest
 
 GithubOrgClient = __import__("client").GithubOrgClient
@@ -55,15 +54,14 @@ class TestGithubOrgClient(unittest.TestCase):
                 "name": "alx-backend_javascript",
                 "license": {"key": "your_license"}
             }
-
         ]
         with patch("client.GithubOrgClient._public_repos_url",
                    new_callable=PropertyMock) as mock_public_repos_url:
             url = "https://api.github.com/orgs/abc"
             mock_public_repos_url.return_value = url
             mock_get_json.return_value = repos
-            client = GithubOrgClient("abc")
-            public_repos = client.public_repos("my_license")
+            client_github = GithubOrgClient("abc")
+            public_repos = client_github.public_repos("my_license")
 
             self.assertEqual(public_repos, ["alx-backend_python"])
             mock_public_repos_url.assert_called_once()
@@ -94,3 +92,19 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def tearDownClass(cls):
         """Stop the patcher"""
         cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """Test that public_repos method returns the expected repos"""
+        client_github = GithubOrgClient("abc")
+        with patch('client.get_json', side_effect=[self.org_payload,
+                                                   self.repos_payload]):
+            repos = client_github.public_repos()
+            self.assertEqual(repos, self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        """Test that public_repos method returns the expected repos"""
+        client_github = GithubOrgClient("abc")
+        with patch('client.get_json', side_effect=[self.org_payload,
+                                                   self.repos_payload]):
+            repos = client_github.public_repos(license="apache-2.0")
+            self.assertEqual(repos, self.apache2_repos)
