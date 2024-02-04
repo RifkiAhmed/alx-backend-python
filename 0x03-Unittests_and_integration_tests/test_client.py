@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Test module for org method"""
-from parameterized import parameterized
-from unittest.mock import MagicMock, patch, PropertyMock
+from parameterized import parameterized, parameterized_class
+import requests
+from unittest.mock import Mock, MagicMock, patch, PropertyMock
 import unittest
 
 GithubOrgClient = __import__("client").GithubOrgClient
+TEST_PAYLOAD = __import__("fixtures").TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -75,3 +77,20 @@ class TestGithubOrgClient(unittest.TestCase):
         """Test that has_license method returns what it is supposed to"""
         self.assertEqual(GithubOrgClient.has_license(repo, license_key),
                          expected_value)
+
+@parameterized_class(('org_payload', 'repos_payload', 'expected_repos',
+                      'apache2_repos'), TEST_PAYLOAD)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Test the public_repos method in an integration test"""
+
+    @classmethod
+    def setUpClass(cls):
+        """Patch requests.get using side_effect to return the fixtures"""
+        cls.get_patcher = patch('requests.get')
+        cls.mock_get_json = cls.get_patcher.start()
+        cls.mock_get_json.side_effect = [cls.org_payload, cls.repos_payload]
+
+    @classmethod
+    def tearDownClass(cls):
+        """Stop the patcher"""
+        cls.get_patcher.stop()
